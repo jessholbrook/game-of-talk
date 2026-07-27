@@ -13,7 +13,7 @@ import {
   createRng,
   downsampleFossil,
   getMosaicLayout,
-  injectSpores,
+  injectFieldPattern,
   populationDensity,
   stepGrid,
 } from "@/lib/life.mjs";
@@ -66,6 +66,16 @@ const MINUTE_MS = 60_000;
 
 type MoodConfig = {
   label: string;
+  pattern:
+    | "slab"
+    | "orbit"
+    | "spores"
+    | "wave"
+    | "burst"
+    | "scatter"
+    | "lightning"
+    | "branch";
+  initialDensity: number;
   stepMs: number;
   mutationMs: number;
   sensitivity: number;
@@ -75,7 +85,10 @@ type MoodConfig = {
   radiusMin: number;
   radiusMax: number;
   densityCap: number;
+  birthTwoScale: number;
+  survivalOneChance: number;
   survivalFourScale: number;
+  survivalFiveChance: number;
   backgroundBirth: number;
   trailGain: number;
   trailFade: number;
@@ -86,6 +99,8 @@ type MoodConfig = {
 const MOODS: Record<Mood, MoodConfig> = {
   glacial: {
     label: "Glacial",
+    pattern: "slab",
+    initialDensity: 0.055,
     stepMs: 205,
     mutationMs: 285,
     sensitivity: 0.82,
@@ -95,7 +110,10 @@ const MOODS: Record<Mood, MoodConfig> = {
     radiusMin: 0.1,
     radiusMax: 0.18,
     densityCap: 0.24,
+    birthTwoScale: 0.08,
+    survivalOneChance: 0.16,
     survivalFourScale: 0.24,
+    survivalFiveChance: 0.08,
     backgroundBirth: 0.0005,
     trailGain: 12,
     trailFade: 2,
@@ -104,6 +122,8 @@ const MOODS: Record<Mood, MoodConfig> = {
   },
   meditative: {
     label: "Meditative",
+    pattern: "orbit",
+    initialDensity: 0.045,
     stepMs: 150,
     mutationMs: 190,
     sensitivity: 0.72,
@@ -113,7 +133,10 @@ const MOODS: Record<Mood, MoodConfig> = {
     radiusMin: 0.14,
     radiusMax: 0.3,
     densityCap: 0.25,
+    birthTwoScale: 0.015,
+    survivalOneChance: 0.025,
     survivalFourScale: 0.15,
+    survivalFiveChance: 0.015,
     backgroundBirth: 0.0007,
     trailGain: 16,
     trailFade: 3,
@@ -122,6 +145,8 @@ const MOODS: Record<Mood, MoodConfig> = {
   },
   balanced: {
     label: "Balanced",
+    pattern: "spores",
+    initialDensity: 0.105,
     stepMs: 108,
     mutationMs: 145,
     sensitivity: 0.9,
@@ -131,7 +156,10 @@ const MOODS: Record<Mood, MoodConfig> = {
     radiusMin: 0.16,
     radiusMax: 0.4,
     densityCap: 0.28,
+    birthTwoScale: 0,
+    survivalOneChance: 0,
     survivalFourScale: 0.16,
+    survivalFiveChance: 0,
     backgroundBirth: 0.0008,
     trailGain: 18,
     trailFade: 4,
@@ -140,6 +168,8 @@ const MOODS: Record<Mood, MoodConfig> = {
   },
   tidal: {
     label: "Tidal",
+    pattern: "wave",
+    initialDensity: 0.065,
     stepMs: 128,
     mutationMs: 175,
     sensitivity: 0.96,
@@ -149,7 +179,10 @@ const MOODS: Record<Mood, MoodConfig> = {
     radiusMin: 0.3,
     radiusMax: 0.46,
     densityCap: 0.26,
+    birthTwoScale: 0.15,
+    survivalOneChance: 0.035,
     survivalFourScale: 0.18,
+    survivalFiveChance: 0.04,
     backgroundBirth: 0.0008,
     trailGain: 16,
     trailFade: 4,
@@ -158,6 +191,8 @@ const MOODS: Record<Mood, MoodConfig> = {
   },
   staccato: {
     label: "Staccato",
+    pattern: "burst",
+    initialDensity: 0.025,
     stepMs: 88,
     mutationMs: 235,
     sensitivity: 1.18,
@@ -167,7 +202,10 @@ const MOODS: Record<Mood, MoodConfig> = {
     radiusMin: 0.16,
     radiusMax: 0.34,
     densityCap: 0.18,
+    birthTwoScale: 0,
+    survivalOneChance: 0,
     survivalFourScale: 0.06,
+    survivalFiveChance: 0,
     backgroundBirth: 0.0003,
     trailGain: 22,
     trailFade: 7,
@@ -176,6 +214,8 @@ const MOODS: Record<Mood, MoodConfig> = {
   },
   restless: {
     label: "Restless",
+    pattern: "scatter",
+    initialDensity: 0.08,
     stepMs: 82,
     mutationMs: 112,
     sensitivity: 1.08,
@@ -185,7 +225,10 @@ const MOODS: Record<Mood, MoodConfig> = {
     radiusMin: 0.17,
     radiusMax: 0.42,
     densityCap: 0.27,
+    birthTwoScale: 0.045,
+    survivalOneChance: 0.14,
     survivalFourScale: 0.13,
+    survivalFiveChance: 0.025,
     backgroundBirth: 0.0008,
     trailGain: 20,
     trailFade: 5,
@@ -194,6 +237,8 @@ const MOODS: Record<Mood, MoodConfig> = {
   },
   electric: {
     label: "Electric",
+    pattern: "lightning",
+    initialDensity: 0.05,
     stepMs: 64,
     mutationMs: 95,
     sensitivity: 1.25,
@@ -203,7 +248,10 @@ const MOODS: Record<Mood, MoodConfig> = {
     radiusMin: 0.2,
     radiusMax: 0.46,
     densityCap: 0.29,
+    birthTwoScale: 0.22,
+    survivalOneChance: 0.08,
     survivalFourScale: 0.12,
+    survivalFiveChance: 0.02,
     backgroundBirth: 0.0009,
     trailGain: 24,
     trailFade: 6,
@@ -212,6 +260,8 @@ const MOODS: Record<Mood, MoodConfig> = {
   },
   overgrown: {
     label: "Overgrown",
+    pattern: "branch",
+    initialDensity: 0.14,
     stepMs: 138,
     mutationMs: 105,
     sensitivity: 0.78,
@@ -221,7 +271,10 @@ const MOODS: Record<Mood, MoodConfig> = {
     radiusMin: 0.12,
     radiusMax: 0.29,
     densityCap: 0.34,
+    birthTwoScale: 0.28,
+    survivalOneChance: 0.18,
     survivalFourScale: 0.32,
+    survivalFiveChance: 0.24,
     backgroundBirth: 0.0014,
     trailGain: 15,
     trailFade: 3,
@@ -403,6 +456,17 @@ const EMPTY_FEATURES: AudioFeatures = {
   texture: 0.35,
 };
 
+function getPreviewFeatures(now: number): AudioFeatures {
+  const phrase = (Math.sin(now / 1700) + 1) / 2;
+  const accent = Math.max(0, Math.sin(now / 410));
+  return {
+    level: 0.3 + phrase * 0.38,
+    brightness: 0.48 + Math.sin(now / 2500) * 0.3,
+    flux: accent > 0.84 ? accent : 0.1,
+    texture: 0.48 + Math.sin(now / 1200) * 0.28,
+  };
+}
+
 function formatTime(milliseconds: number) {
   const seconds = Math.floor(milliseconds / 1000);
   const minutes = Math.floor(seconds / 60);
@@ -472,6 +536,7 @@ export function TalkVisualizer() {
   const lastStepRef = useRef(0);
   const lastMutationRef = useRef(0);
   const lastVoiceRef = useRef(0);
+  const voiceWasActiveRef = useRef(false);
   const flowRef = useRef({ angle: 0.4, radius: 0.18 });
   const intensityRef = useRef(1);
   const fossilIdRef = useRef(0);
@@ -534,6 +599,24 @@ export function TalkVisualizer() {
     fossilsRef.current = fossils;
   }, [fossils]);
 
+  useEffect(() => {
+    if (phaseRef.current !== "setup") return;
+    const moodIndex = (Object.keys(MOODS) as Mood[]).indexOf(mood);
+    rngRef.current = createRng(4_810 + moodIndex * 997);
+    gridRef.current = createGrid(
+      GRID_WIDTH,
+      GRID_HEIGHT,
+      moodConfig.initialDensity,
+      rngRef.current,
+    );
+    agesRef.current.fill(0);
+    flowRef.current = { angle: moodIndex * 0.74, radius: 0.18 };
+    lastMutationRef.current = 0;
+    lastStepRef.current = 0;
+    lastVoiceRef.current = performance.now();
+    voiceWasActiveRef.current = false;
+  }, [mood, moodConfig.initialDensity]);
+
   const captureFossil = useCallback(() => {
     const cells = downsampleFossil(
       gridRef.current,
@@ -556,11 +639,11 @@ export function TalkVisualizer() {
     gridRef.current = createGrid(
       GRID_WIDTH,
       GRID_HEIGHT,
-      0.105,
+      moodConfig.initialDensity,
       rngRef.current,
     );
     agesRef.current.fill(0);
-  }, []);
+  }, [moodConfig.initialDensity]);
 
   const stopAudio = useCallback(() => {
     for (const track of streamRef.current?.getTracks() ?? []) track.stop();
@@ -621,6 +704,7 @@ export function TalkVisualizer() {
       lastStepRef.current = lastFrameRef.current;
       lastMutationRef.current = lastFrameRef.current;
       lastVoiceRef.current = lastFrameRef.current;
+      voiceWasActiveRef.current = false;
       fossilIdRef.current = 0;
       setElapsed(0);
       setFossils([]);
@@ -650,6 +734,7 @@ export function TalkVisualizer() {
     elapsedRef.current = 0;
     lastMinuteRef.current = 0;
     fossilIdRef.current = 0;
+    voiceWasActiveRef.current = false;
     setElapsed(0);
     setFossils([]);
     setPaused(false);
@@ -812,6 +897,8 @@ export function TalkVisualizer() {
       const delta = Math.min(50, Math.max(0, now - (lastFrameRef.current || now)));
       lastFrameRef.current = now;
       const active = phaseRef.current === "live" && !pausedRef.current;
+      const previewing = phaseRef.current === "setup";
+      const responsive = active || previewing;
 
       if (active) {
         elapsedRef.current += delta;
@@ -821,18 +908,24 @@ export function TalkVisualizer() {
         }
       }
 
-      const features = active ? analyzeAudio(now) : EMPTY_FEATURES;
+      const features = active
+        ? analyzeAudio(now)
+        : previewing
+          ? getPreviewFeatures(now)
+          : EMPTY_FEATURES;
       featureRef.current = features;
       const voiceActive = features.level > 0.055;
+      const voiceOnset = voiceActive && !voiceWasActiveRef.current;
+      voiceWasActiveRef.current = voiceActive;
       if (voiceActive) lastVoiceRef.current = now;
       const silenceDuration = now - lastVoiceRef.current;
 
       const accentPassed =
         moodConfig.injectionGate === "voice" ||
         features.flux > 0.22 ||
-        features.level > 0.55;
+        voiceOnset;
       if (
-        active &&
+        responsive &&
         now - lastMutationRef.current > moodConfig.mutationMs &&
         voiceActive &&
         accentPassed
@@ -847,14 +940,26 @@ export function TalkVisualizer() {
           features.texture * (moodConfig.radiusMax - moodConfig.radiusMin);
         const x = 0.5 + Math.cos(flow.angle * 0.71) * flow.radius;
         const y = 0.5 + Math.sin(flow.angle) * flow.radius;
-        gridRef.current = injectSpores(gridRef.current, GRID_WIDTH, GRID_HEIGHT, {
-          x,
-          y,
-          energy: Math.min(1, features.level * moodConfig.sensitivity * intensityRef.current),
-          texture: features.texture,
-          flux: features.flux,
-          rng: rngRef.current,
-        });
+        gridRef.current = injectFieldPattern(
+          gridRef.current,
+          GRID_WIDTH,
+          GRID_HEIGHT,
+          {
+            style: moodConfig.pattern,
+            x,
+            y,
+            energy: Math.min(
+              1,
+              features.level *
+                moodConfig.sensitivity *
+                intensityRef.current,
+            ),
+            texture: features.texture,
+            flux: features.flux,
+            phase: flow.angle,
+            rng: rngRef.current,
+          },
+        );
       }
 
       if (now - lastStepRef.current > moodConfig.stepMs) {
@@ -865,13 +970,22 @@ export function TalkVisualizer() {
             ? Math.min(0.045, moodConfig.decay + silenceDuration / 300_000)
             : 0;
         gridRef.current = stepGrid(gridRef.current, GRID_WIDTH, GRID_HEIGHT, {
-          survivalFourChance: active
+          survivalOneChance: responsive
+            ? moodConfig.survivalOneChance * features.level
+            : 0,
+          survivalFourChance: responsive
             ? features.level * moodConfig.survivalFourScale
             : 0.015,
+          survivalFiveChance: responsive
+            ? moodConfig.survivalFiveChance * features.level
+            : 0,
+          birthTwoChance: responsive
+            ? moodConfig.birthTwoScale * features.level
+            : 0,
           mortality:
             silenceDecay + (density > moodConfig.densityCap ? 0.025 : 0),
           backgroundBirthChance:
-            active && density < 0.075 && silenceDuration < 8_000
+            responsive && density < 0.075 && silenceDuration < 8_000
               ? moodConfig.backgroundBirth
               : 0,
           rng: rngRef.current,

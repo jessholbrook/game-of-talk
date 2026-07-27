@@ -72,18 +72,19 @@ interface colors automatically.
 
 ## Talk Feels
 
-The feel control changes the simulation's mutation rhythm, spatial drift,
-density ceiling, survival variation, and decay. It is not a simple speed
-control.
+The feel control changes spatial mutation grammar, neighbor rules, density,
+survival, decay, and rhythm. Setup mode runs a synthetic local preview so these
+differences are visible before microphone access. The underlying field remains
+Life-inspired in every feel.
 
-- Glacial: slow, durable structures that the voice nudges rather than erupts
-- Meditative: sparse and patient, with long visual memory
-- Balanced: the neutral instrument setting
-- Tidal: broad wandering bands that swell with sustained speech
-- Staccato: sharp phrase-triggered blooms with fast clearing
-- Restless: frequent movement and shorter-lived colonies
-- Electric: fast, bright, high-sensitivity mutation
-- Overgrown: dense, persistent colonies that remain inhabited in quiet
+- Glacial: mirrored crystalline slabs that rotate slowly and erode reluctantly
+- Meditative: sparse, breathing double orbits with long visual memory
+- Balanced: drifting spore clouds under mostly classic Life rules
+- Tidal: field-wide sine bands that advance as broad wavefronts
+- Staccato: isolated rotated motifs triggered by phrase onsets and accents
+- Restless: uneven satellite colonies clustered around a nervous wandering site
+- Electric: connected branching bolts with expansive two-neighbor births
+- Overgrown: new branches extending from the living frontier of older colonies
 
 ## Typography
 

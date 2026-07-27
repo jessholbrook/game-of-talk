@@ -15,7 +15,7 @@
 ## Review
 
 - Production build succeeds.
-- Nine deterministic simulation and rendered-page tests pass.
+- Eleven deterministic simulation and rendered-page tests pass.
 - TypeScript and lint checks pass.
 - The live tool supports microphone and autonomous modes, pause-aware timing,
   automatic and manual fossil capture, fullscreen, narrow companion layouts,
@@ -48,4 +48,13 @@
 - [x] Install the revised local-processing introduction
 - [x] Replace the social preview with Vox Automata artwork
 - [x] Update rendered-page coverage
+- [x] Verify build, tests, types, and lint
+
+## Distinct feel behavior
+
+- [x] Define a generative philosophy for spatial feel identities
+- [x] Add deterministic pattern injection primitives and expanded Life rules
+- [x] Give all eight feels unique spatial and survival behavior
+- [x] Make setup mode preview the selected feel before microphone access
+- [x] Update documentation and regression coverage
 - [x] Verify build, tests, types, and lint

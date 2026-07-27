@@ -5,6 +5,7 @@ import {
   createRng,
   downsampleFossil,
   getMosaicLayout,
+  injectFieldPattern,
   injectSpores,
   populationDensity,
   stepGrid,
@@ -61,6 +62,70 @@ test("seeded creation and spores are deterministic", () => {
     injectSpores(first, 12, 8, { ...options, rng: createRng(22) }),
     injectSpores(second, 12, 8, { ...options, rng: createRng(22) }),
   );
+});
+
+test("feel patterns are deterministic and spatially distinct", () => {
+  const source = new Uint8Array(48 * 30);
+  const styles = [
+    "slab",
+    "orbit",
+    "spores",
+    "wave",
+    "burst",
+    "scatter",
+    "lightning",
+    "branch",
+  ];
+  const outputs = styles.map((style) =>
+    injectFieldPattern(source, 48, 30, {
+      style,
+      x: 0.46,
+      y: 0.52,
+      energy: 0.72,
+      texture: 0.58,
+      flux: 0.76,
+      phase: 1.35,
+      rng: createRng(204),
+    }),
+  );
+
+  styles.forEach((style, index) => {
+    const repeated = injectFieldPattern(source, 48, 30, {
+      style,
+      x: 0.46,
+      y: 0.52,
+      energy: 0.72,
+      texture: 0.58,
+      flux: 0.76,
+      phase: 1.35,
+      rng: createRng(204),
+    });
+    assert.deepEqual(outputs[index], repeated);
+    assert.notEqual(outputs[index], source);
+    assert.ok(populationDensity(outputs[index]) > 0);
+  });
+
+  assert.equal(
+    new Set(outputs.map((output) => Buffer.from(output).toString("base64"))).size,
+    styles.length,
+  );
+  assert.deepEqual(source, new Uint8Array(48 * 30));
+});
+
+test("expanded neighbor rules create distinct evolution", () => {
+  const source = gridFromPoints(9, 9, [
+    [4, 4],
+    [5, 4],
+  ]);
+  const standard = stepGrid(source, 9, 9, { rng: createRng(4) });
+  const expansive = stepGrid(source, 9, 9, {
+    birthTwoChance: 1,
+    survivalOneChance: 1,
+    rng: createRng(4),
+  });
+
+  assert.notDeepEqual(expansive, standard);
+  assert.ok(populationDensity(expansive) > populationDensity(standard));
 });
 
 test("probabilities clamp and never produce invalid cell values", () => {

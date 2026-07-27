@@ -19,10 +19,12 @@ It does not transcribe, record, upload, or semantically analyze speech.
 Every minute becomes a small chronological fossil block. **Save block** can
 capture an extra moment manually.
 
-The feels change how the field mutates, drifts, survives, and decays. They are
-not just different speed settings. Every palette themes both the living cells
-and their background. Terminal remains the default; Bone is a light-field
-fallback for weak projectors.
+The feels use different cellular grammars, not just different speeds. They form
+crystalline slabs, breathing orbits, drifting clouds, broad waves, isolated
+impacts, restless satellites, branching bolts, or frontier growth. The setup
+field previews each behavior before the microphone begins. Every palette themes
+both the living cells and their background. Terminal remains the default; Bone
+is a light-field fallback for weak projectors.
 
 ## Presenter controls
 
