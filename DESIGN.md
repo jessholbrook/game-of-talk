@@ -10,7 +10,12 @@ Dark, high-contrast, and matte. The terminal reference comes from phosphor, grid
 
 ## Color Strategy
 
-Restrained by default. Tinted near-black surfaces carry a warm-green field with a small amber signal color. Alternate palettes change the field and signal colors while preserving contrast and hierarchy.
+Restrained by default. Tinted near-black surfaces carry a warm-green field with
+a small amber signal color. Every alternate palette is a paired theme: ground,
+panel, living cells, trails, controls, and signals shift together while
+preserving contrast and hierarchy. Palette controls preview both the ground and
+cell colors. Custom mode accepts one color for each and derives the supporting
+interface colors automatically.
 
 ### Terminal
 
@@ -25,42 +30,42 @@ Restrained by default. Tinted near-black surfaces carry a warm-green field with 
 
 ### Ember
 
-- Ground: `oklch(0.115 0.014 35)`
-- Life: `oklch(0.78 0.18 38)`
+- Ground: `oklch(0.14 0.038 35)`
+- Life: `oklch(0.80 0.19 38)`
 - Life hot: `oklch(0.91 0.15 72)`
 - Signal: `oklch(0.73 0.16 20)`
 
 ### Ice
 
-- Ground: `oklch(0.115 0.012 245)`
+- Ground: `oklch(0.14 0.04 245)`
 - Life: `oklch(0.79 0.14 215)`
 - Life hot: `oklch(0.91 0.11 185)`
 - Signal: `oklch(0.76 0.15 285)`
 
 ### Sodium
 
-- Ground: `oklch(0.108 0.010 85)`
+- Ground: `oklch(0.145 0.035 78)`
 - Life: `oklch(0.84 0.14 92)`
 - Life hot: `oklch(0.95 0.07 105)`
 - Signal: `oklch(0.77 0.16 48)`
 
 ### Bone
 
-- Ground: `oklch(0.105 0.006 75)`
-- Life: `oklch(0.88 0.025 85)`
-- Life hot: `oklch(0.97 0.012 95)`
-- Signal: `oklch(0.78 0.14 55)`
+- Ground: `oklch(0.89 0.024 85)`
+- Life: `oklch(0.24 0.05 70)`
+- Life hot: `oklch(0.14 0.055 65)`
+- Signal: `oklch(0.55 0.15 50)`
 
 ### Ultraviolet
 
-- Ground: `oklch(0.108 0.012 300)`
+- Ground: `oklch(0.14 0.045 300)`
 - Life: `oklch(0.80 0.14 300)`
 - Life hot: `oklch(0.93 0.075 325)`
 - Signal: `oklch(0.81 0.13 85)`
 
 ### Rosewood
 
-- Ground: `oklch(0.108 0.012 355)`
+- Ground: `oklch(0.14 0.04 355)`
 - Life: `oklch(0.80 0.14 355)`
 - Life hot: `oklch(0.92 0.09 25)`
 - Signal: `oklch(0.82 0.13 105)`

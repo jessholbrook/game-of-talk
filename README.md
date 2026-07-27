@@ -9,7 +9,8 @@ It does not transcribe, record, upload, or semantically analyze speech.
 ## Use it for a talk
 
 1. Open the site in Chrome, Edge, or Arc on your laptop.
-2. Choose one of eight talk feels and seven field palettes.
+2. Choose one of eight talk feels and seven paired palettes, or pick custom
+   cell and background colors.
 3. Leave **Projector boost** on unless the display has excellent contrast.
 4. Select **Begin with microphone** and allow microphone access.
 5. Tile the browser beside windowed slides, or use **Full screen**.
@@ -19,8 +20,9 @@ Every minute becomes a small chronological fossil block. **Save block** can
 capture an extra moment manually.
 
 The feels change how the field mutates, drifts, survives, and decays. They are
-not just different speed settings. Terminal remains the default palette; Bone
-is the strongest fallback for weak projectors.
+not just different speed settings. Every palette themes both the living cells
+and their background. Terminal remains the default; Bone is a light-field
+fallback for weak projectors.
 
 ## Presenter controls
 

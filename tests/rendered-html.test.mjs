@@ -50,5 +50,8 @@ test("ships a private, browser-local microphone experience", async () => {
   for (const palette of ["Sodium", "Bone", "Ultraviolet", "Rosewood"]) {
     assert.match(html, new RegExp(palette));
   }
+  assert.match(html, /Custom colors/);
+  assert.match(html, /Cell color/);
+  assert.match(html, /Background color/);
   assert.doesNotMatch(html, /api[_-]?key|speech[- ]to[- ]text|transcript/i);
 });

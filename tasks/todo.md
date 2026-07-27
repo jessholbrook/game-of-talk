@@ -10,7 +10,7 @@
 - [x] Capture one-minute fossil blocks and assemble a final talk mosaic
 - [x] Add microphone-denied and demo-mode fallbacks
 - [x] Verify build, tests, type safety, lint, and local preview operation
-- [ ] Publish a private production preview
+- [x] Publish a private production preview
 
 ## Review
 
@@ -30,3 +30,13 @@
 - [x] Update visual-system documentation and rendered-page coverage
 - [x] Verify build, tests, types, and lint
 - [x] Commit, push, and publish the update
+
+## Paired palette controls
+
+- [x] Make every preset visibly theme both the field and its cells
+- [x] Show paired foreground and background swatches in palette options
+- [x] Add custom cell and background color pickers
+- [x] Keep fossils, mosaic export, live controls, and palette cycling consistent
+- [x] Update visual-system documentation and rendered-page coverage
+- [x] Verify build, tests, types, and lint
+- [ ] Commit, push, and publish the update

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  type CSSProperties,
   useCallback,
   useEffect,
   useMemo,
@@ -27,7 +28,7 @@ type Mood =
   | "restless"
   | "electric"
   | "overgrown";
-type Palette =
+type PresetPalette =
   | "terminal"
   | "ember"
   | "ice"
@@ -35,6 +36,7 @@ type Palette =
   | "bone"
   | "ultraviolet"
   | "rosewood";
+type Palette = PresetPalette | "custom";
 type MicStatus =
   | "idle"
   | "requesting"
@@ -228,62 +230,171 @@ const MOODS: Record<Mood, MoodConfig> = {
   },
 };
 
-const PALETTES: Record<
-  Palette,
-  { label: string; ground: string; hot: string; life: string; dim: string }
-> = {
+type PaletteTheme = {
+  label: string;
+  ground: string;
+  panel: string;
+  hot: string;
+  life: string;
+  dim: string;
+  signal: string;
+  text: string;
+  muted: string;
+  line: string;
+};
+
+const PALETTES: Record<PresetPalette, PaletteTheme> = {
   terminal: {
     label: "Terminal",
     ground: "oklch(0.105 0.008 145)",
+    panel: "oklch(0.145 0.01 145)",
     hot: "oklch(0.93 0.12 124)",
     life: "oklch(0.82 0.17 145)",
     dim: "oklch(0.34 0.055 145)",
+    signal: "oklch(0.79 0.15 83)",
+    text: "oklch(0.9 0.025 145)",
+    muted: "oklch(0.65 0.025 145)",
+    line: "oklch(0.34 0.025 145 / 55%)",
   },
   ember: {
     label: "Ember",
-    ground: "oklch(0.115 0.014 35)",
+    ground: "oklch(0.14 0.038 35)",
+    panel: "oklch(0.185 0.044 35)",
     hot: "oklch(0.91 0.15 72)",
-    life: "oklch(0.78 0.18 38)",
-    dim: "oklch(0.35 0.065 35)",
+    life: "oklch(0.8 0.19 38)",
+    dim: "oklch(0.38 0.085 35)",
+    signal: "oklch(0.73 0.16 20)",
+    text: "oklch(0.91 0.03 55)",
+    muted: "oklch(0.67 0.045 45)",
+    line: "oklch(0.39 0.065 38 / 65%)",
   },
   ice: {
     label: "Ice",
-    ground: "oklch(0.115 0.012 245)",
+    ground: "oklch(0.14 0.04 245)",
+    panel: "oklch(0.185 0.045 245)",
     hot: "oklch(0.91 0.11 185)",
     life: "oklch(0.79 0.14 215)",
-    dim: "oklch(0.36 0.06 235)",
+    dim: "oklch(0.39 0.08 235)",
+    signal: "oklch(0.76 0.15 285)",
+    text: "oklch(0.92 0.03 225)",
+    muted: "oklch(0.69 0.045 235)",
+    line: "oklch(0.4 0.065 235 / 65%)",
   },
   sodium: {
     label: "Sodium",
-    ground: "oklch(0.108 0.01 85)",
+    ground: "oklch(0.145 0.035 78)",
+    panel: "oklch(0.19 0.042 78)",
     hot: "oklch(0.95 0.07 105)",
     life: "oklch(0.84 0.14 92)",
-    dim: "oklch(0.36 0.05 85)",
+    dim: "oklch(0.4 0.075 85)",
+    signal: "oklch(0.77 0.16 48)",
+    text: "oklch(0.92 0.025 85)",
+    muted: "oklch(0.69 0.035 85)",
+    line: "oklch(0.4 0.055 85 / 65%)",
   },
   bone: {
     label: "Bone",
-    ground: "oklch(0.105 0.006 75)",
-    hot: "oklch(0.97 0.012 95)",
-    life: "oklch(0.88 0.025 85)",
-    dim: "oklch(0.36 0.025 75)",
+    ground: "oklch(0.89 0.024 85)",
+    panel: "oklch(0.84 0.03 85)",
+    hot: "oklch(0.14 0.055 65)",
+    life: "oklch(0.24 0.05 70)",
+    dim: "oklch(0.61 0.035 78)",
+    signal: "oklch(0.55 0.15 50)",
+    text: "oklch(0.19 0.025 75)",
+    muted: "oklch(0.43 0.03 75)",
+    line: "oklch(0.62 0.03 75 / 70%)",
   },
   ultraviolet: {
     label: "Ultraviolet",
-    ground: "oklch(0.108 0.012 300)",
+    ground: "oklch(0.14 0.045 300)",
+    panel: "oklch(0.185 0.052 300)",
     hot: "oklch(0.93 0.075 325)",
     life: "oklch(0.8 0.14 300)",
-    dim: "oklch(0.36 0.05 300)",
+    dim: "oklch(0.39 0.08 300)",
+    signal: "oklch(0.81 0.13 85)",
+    text: "oklch(0.92 0.03 300)",
+    muted: "oklch(0.69 0.04 300)",
+    line: "oklch(0.4 0.065 300 / 65%)",
   },
   rosewood: {
     label: "Rosewood",
-    ground: "oklch(0.108 0.012 355)",
+    ground: "oklch(0.14 0.04 355)",
+    panel: "oklch(0.185 0.048 355)",
     hot: "oklch(0.92 0.09 25)",
     life: "oklch(0.8 0.14 355)",
-    dim: "oklch(0.36 0.05 355)",
+    dim: "oklch(0.39 0.075 355)",
+    signal: "oklch(0.82 0.13 105)",
+    text: "oklch(0.92 0.03 355)",
+    muted: "oklch(0.69 0.04 355)",
+    line: "oklch(0.4 0.06 355 / 65%)",
   },
 };
 
-const PALETTE_ORDER = Object.keys(PALETTES) as Palette[];
+const PALETTE_ORDER: Palette[] = [
+  ...(Object.keys(PALETTES) as PresetPalette[]),
+  "custom",
+];
+const DEFAULT_CUSTOM_LIFE = "#7ce99a";
+const DEFAULT_CUSTOM_GROUND = "#171329";
+
+function hexToRgb(hex: string) {
+  const value = Number.parseInt(hex.slice(1), 16);
+  return {
+    red: (value >> 16) & 255,
+    green: (value >> 8) & 255,
+    blue: value & 255,
+  };
+}
+
+function mixHex(first: string, second: string, amount: number) {
+  const a = hexToRgb(first);
+  const b = hexToRgb(second);
+  const channel = (start: number, end: number) =>
+    Math.round(start + (end - start) * amount)
+      .toString(16)
+      .padStart(2, "0");
+  return `#${channel(a.red, b.red)}${channel(a.green, b.green)}${channel(
+    a.blue,
+    b.blue,
+  )}`;
+}
+
+function relativeLuminance(hex: string) {
+  const { red, green, blue } = hexToRgb(hex);
+  const linearize = (value: number) => {
+    const normalized = value / 255;
+    return normalized <= 0.04045
+      ? normalized / 12.92
+      : ((normalized + 0.055) / 1.055) ** 2.4;
+  };
+  return (
+    linearize(red) * 0.2126 +
+    linearize(green) * 0.7152 +
+    linearize(blue) * 0.0722
+  );
+}
+
+function createCustomTheme(life: string, ground: string): PaletteTheme {
+  const lightGround = relativeLuminance(ground) > 0.42;
+  const text = lightGround ? "#171b19" : "#f0f4ef";
+  const contrast = lightGround ? "#111512" : "#f4f7f2";
+  return {
+    label: "Custom",
+    ground,
+    panel: mixHex(ground, life, 0.08),
+    hot: mixHex(life, contrast, 0.34),
+    life,
+    dim: mixHex(ground, life, 0.43),
+    signal: mixHex(life, lightGround ? "#8f3b21" : "#f1bb51", 0.42),
+    text,
+    muted: mixHex(ground, text, 0.62),
+    line: mixHex(ground, text, 0.28),
+  };
+}
+
+type VisualizerStyle = CSSProperties & {
+  [key: `--${string}`]: string;
+};
 
 const EMPTY_FEATURES: AudioFeatures = {
   level: 0,
@@ -310,11 +421,11 @@ function getStatusLabel(status: MicStatus) {
 
 function FossilCanvas({
   fossil,
-  palette,
+  colors,
   label,
 }: {
   fossil: Fossil;
-  palette: Palette;
+  colors: PaletteTheme;
   label: string;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -327,7 +438,7 @@ function FossilCanvas({
     canvas.width = FOSSIL_SIZE;
     canvas.height = FOSSIL_SIZE;
     context.clearRect(0, 0, FOSSIL_SIZE, FOSSIL_SIZE);
-    const color = PALETTES[palette].life;
+    const color = colors.life;
     for (let index = 0; index < fossil.cells.length; index += 1) {
       const value = fossil.cells[index] / 255;
       if (value <= 0.04) continue;
@@ -336,7 +447,7 @@ function FossilCanvas({
       context.fillRect(index % FOSSIL_SIZE, Math.floor(index / FOSSIL_SIZE), 1, 1);
     }
     context.globalAlpha = 1;
-  }, [fossil, palette]);
+  }, [colors.life, fossil]);
 
   return <canvas ref={canvasRef} className="fossil-canvas" aria-label={label} role="img" />;
 }
@@ -370,6 +481,8 @@ export function TalkVisualizer() {
   const [phase, setPhase] = useState<Phase>("setup");
   const [mood, setMood] = useState<Mood>("balanced");
   const [palette, setPalette] = useState<Palette>("terminal");
+  const [customLife, setCustomLife] = useState(DEFAULT_CUSTOM_LIFE);
+  const [customGround, setCustomGround] = useState(DEFAULT_CUSTOM_GROUND);
   const [projectorBoost, setProjectorBoost] = useState(true);
   const [micStatus, setMicStatus] = useState<MicStatus>("idle");
   const [micError, setMicError] = useState("");
@@ -380,6 +493,26 @@ export function TalkVisualizer() {
   const [controlsHidden, setControlsHidden] = useState(false);
 
   const moodConfig = MOODS[mood];
+  const paletteColors = useMemo(
+    () =>
+      palette === "custom"
+        ? createCustomTheme(customLife, customGround)
+        : PALETTES[palette],
+    [customGround, customLife, palette],
+  );
+  const visualizerStyle = useMemo<VisualizerStyle>(
+    () => ({
+      "--ground": paletteColors.ground,
+      "--panel": paletteColors.panel,
+      "--life": paletteColors.life,
+      "--life-hot": paletteColors.hot,
+      "--signal": paletteColors.signal,
+      "--text": paletteColors.text,
+      "--muted": paletteColors.muted,
+      "--line": paletteColors.line,
+    }),
+    [paletteColors],
+  );
   const mosaicLayout = useMemo(
     () => getMosaicLayout(fossils.length, 16 / 9),
     [fossils.length],
@@ -556,9 +689,9 @@ export function TalkVisualizer() {
     const context = canvas.getContext("2d");
     if (!context) return;
 
-    context.fillStyle = PALETTES[palette].ground;
+    context.fillStyle = paletteColors.ground;
     context.fillRect(0, 0, canvas.width, canvas.height);
-    context.fillStyle = PALETTES[palette].life;
+    context.fillStyle = paletteColors.life;
     context.font = "18px monospace";
     context.fillText(
       `GAME OF TALK  /  ${formatTime(elapsedRef.current)}  /  ${fossils.length} BLOCKS`,
@@ -588,7 +721,7 @@ export function TalkVisualizer() {
     link.download = "game-of-talk-mosaic.png";
     link.href = canvas.toDataURL("image/png");
     link.click();
-  }, [fossils, mosaicLayout, palette]);
+  }, [fossils, mosaicLayout, paletteColors]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -769,7 +902,6 @@ export function TalkVisualizer() {
       const drawHeight = cellSize * GRID_HEIGHT;
       const offsetX = (canvas.width - drawWidth) / 2;
       const offsetY = (canvas.height - drawHeight) / 2;
-      const colors = PALETTES[palette];
       const boost = projectorBoost ? 1 : 0.82;
 
       for (let index = 0; index < gridRef.current.length; index += 1) {
@@ -780,7 +912,11 @@ export function TalkVisualizer() {
         const y = Math.floor(index / GRID_WIDTH);
         const isHot = alive && age < 0.34 && features.flux > 0.38;
         context.globalAlpha = Math.min(1, (alive ? 0.5 + age * 0.5 : age * 0.28) * boost);
-        context.fillStyle = isHot ? colors.hot : alive ? colors.life : colors.dim;
+        context.fillStyle = isHot
+          ? paletteColors.hot
+          : alive
+            ? paletteColors.life
+            : paletteColors.dim;
         const inset = cellSize > 5 ? Math.max(0.5, cellSize * 0.12) : 0.25;
         context.fillRect(
           offsetX + x * cellSize + inset,
@@ -805,7 +941,7 @@ export function TalkVisualizer() {
 
     animationFrame = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(animationFrame);
-  }, [captureFossil, moodConfig, palette, projectorBoost]);
+  }, [captureFossil, moodConfig, paletteColors, projectorBoost]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -858,6 +994,7 @@ export function TalkVisualizer() {
       className={`visualizer palette-${palette} phase-${phase} ${
         controlsHidden ? "controls-hidden" : ""
       }`}
+      style={visualizerStyle}
       onPointerMove={wakeControls}
       data-testid="visualizer"
     >
@@ -902,9 +1039,9 @@ export function TalkVisualizer() {
           </fieldset>
 
           <fieldset>
-            <legend>Field color</legend>
-            <div className="segmented">
-              {(Object.keys(PALETTES) as Palette[]).map((option) => (
+            <legend>Palette</legend>
+            <div className="segmented palette-options">
+              {(Object.keys(PALETTES) as PresetPalette[]).map((option) => (
                 <button
                   type="button"
                   key={option}
@@ -912,13 +1049,63 @@ export function TalkVisualizer() {
                   onClick={() => setPalette(option)}
                 >
                   <span
-                    className="palette-dot"
-                    style={{ backgroundColor: PALETTES[option].life }}
+                    className="palette-pair"
                     aria-hidden="true"
-                  />
+                  >
+                    <span
+                      className="palette-swatch palette-swatch-ground"
+                      style={{ backgroundColor: PALETTES[option].ground }}
+                    />
+                    <span
+                      className="palette-swatch palette-swatch-life"
+                      style={{ backgroundColor: PALETTES[option].life }}
+                    />
+                  </span>
                   {PALETTES[option].label}
                 </button>
               ))}
+              <button
+                type="button"
+                aria-pressed={palette === "custom"}
+                onClick={() => setPalette("custom")}
+              >
+                <span className="palette-pair" aria-hidden="true">
+                  <span
+                    className="palette-swatch palette-swatch-ground"
+                    style={{ backgroundColor: customGround }}
+                  />
+                  <span
+                    className="palette-swatch palette-swatch-life"
+                    style={{ backgroundColor: customLife }}
+                  />
+                </span>
+                Custom
+              </button>
+            </div>
+            <div className="custom-colors" hidden={palette !== "custom"}>
+              <span className="custom-colors-title">Custom colors</span>
+              <label>
+                <span>Cell color</span>
+                <input
+                  type="color"
+                  value={customLife}
+                  onChange={(event) => {
+                    setCustomLife(event.target.value);
+                    setPalette("custom");
+                  }}
+                />
+              </label>
+              <label>
+                <span>Background color</span>
+                <input
+                  type="color"
+                  value={customGround}
+                  onChange={(event) => {
+                    setCustomGround(event.target.value);
+                    setPalette("custom");
+                  }}
+                />
+              </label>
             </div>
           </fieldset>
 
@@ -983,7 +1170,7 @@ export function TalkVisualizer() {
                 <FossilCanvas
                   key={fossil.id}
                   fossil={fossil}
-                  palette={palette}
+                  colors={paletteColors}
                   label={`Saved block ${Math.max(1, fossils.length - 7) + index}`}
                 />
               ))}
@@ -1068,7 +1255,7 @@ export function TalkVisualizer() {
               <figure key={fossil.id}>
                 <FossilCanvas
                   fossil={fossil}
-                  palette={palette}
+                  colors={paletteColors}
                   label={`Talk block ${index + 1}`}
                 />
                 <figcaption>{String(index + 1).padStart(2, "0")}</figcaption>
