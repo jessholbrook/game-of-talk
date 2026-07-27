@@ -10,7 +10,11 @@ Speakers running 20 to 30 minute talks from a laptop in rooms with unpredictable
 
 ## Product Purpose
 
-Game of Talk turns local microphone energy into an abstract, evolving cellular world. It never transcribes, records, uploads, or illustrates the speaker's words. Voice qualities act as environmental forces on a Life-inspired field. Every minute leaves behind a fossil block, and the completed talk becomes a mosaic of those moments.
+Vox Automata turns local microphone energy into an abstract, evolving cellular
+world. It never transcribes, records, uploads, or illustrates the speaker's
+words. Voice qualities act as environmental forces on a Life-inspired field.
+Every minute leaves behind a fossil block, and the completed talk becomes a
+mosaic of those moments.
 
 ## Brand Personality
 

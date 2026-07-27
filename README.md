@@ -1,6 +1,6 @@
-# Game of Talk
+# Vox Automata
 
-Game of Talk is a private, microphone-driven cellular visualizer for live
+Vox Automata is a private, microphone-driven cellular visualizer for live
 presentations. It turns the energy, brightness, texture, and cadence of a
 speaker's voice into environmental forces inside a Life-inspired field.
 

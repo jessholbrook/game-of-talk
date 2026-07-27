@@ -22,18 +22,23 @@ async function render() {
   );
 }
 
-test("server-renders the Game of Talk setup", async () => {
+test("server-renders the Vox Automata setup", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>Game of Talk<\/title>/i);
-  assert.match(html, /Game of Talk/);
+  assert.match(html, /<title>Vox Automata<\/title>/i);
+  assert.match(html, /Vox Automata/);
+  assert.doesNotMatch(html, /Game of Talk|A speaking instrument/);
   assert.match(html, /Begin with microphone/);
   assert.match(html, /Use autonomous mode/);
   assert.match(html, /How should this talk feel\?/);
-  assert.match(html, /Nothing is transcribed, recorded, or sent anywhere/);
+  assert.match(
+    html,
+    /Your words affect the local environment, growing a representation of your talk/,
+  );
+  assert.match(html, /All local\. Nothing is transcribed, recorded, or sent anywhere/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
 });
 

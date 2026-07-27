@@ -694,7 +694,7 @@ export function TalkVisualizer() {
     context.fillStyle = paletteColors.life;
     context.font = "18px monospace";
     context.fillText(
-      `GAME OF TALK  /  ${formatTime(elapsedRef.current)}  /  ${fossils.length} BLOCKS`,
+      `VOX AUTOMATA  /  ${formatTime(elapsedRef.current)}  /  ${fossils.length} BLOCKS`,
       gutter,
       38,
     );
@@ -718,7 +718,7 @@ export function TalkVisualizer() {
     });
     context.globalAlpha = 1;
     const link = document.createElement("a");
-    link.download = "game-of-talk-mosaic.png";
+    link.download = "vox-automata-mosaic.png";
     link.href = canvas.toDataURL("image/png");
     link.click();
   }, [fossils, mosaicLayout, paletteColors]);
@@ -1011,15 +1011,15 @@ export function TalkVisualizer() {
       {phase === "setup" && (
         <section className="setup-panel" aria-labelledby="setup-title">
           <div className="wordmark" aria-hidden="true">
-            <span>G</span>
+            <span>V</span>
             <span>O</span>
-            <span>T</span>
+            <span>X</span>
           </div>
-          <p className="eyebrow">A speaking instrument</p>
-          <h1 id="setup-title">Game of Talk</h1>
+          <h1 id="setup-title">Vox Automata</h1>
           <p className="setup-intro">
-            Your voice becomes climate inside a living field. Nothing is
-            transcribed, recorded, or sent anywhere.
+            Your words affect the local environment, growing a representation
+            of your talk. All local. Nothing is transcribed, recorded, or sent
+            anywhere.
           </p>
 
           <fieldset>

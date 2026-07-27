@@ -1,4 +1,4 @@
-# Game of Talk Design System
+# Vox Automata Design System
 
 ## Physical Scene
 

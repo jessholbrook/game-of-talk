@@ -1,4 +1,4 @@
-# Game of Talk
+# Vox Automata
 
 ## Plan
 
@@ -40,3 +40,12 @@
 - [x] Update visual-system documentation and rendered-page coverage
 - [x] Verify build, tests, types, and lint
 - [x] Commit, push, and publish the update
+
+## Vox Automata rename
+
+- [x] Rename the interface, metadata, exports, and documentation
+- [x] Remove the setup eyebrow
+- [x] Install the revised local-processing introduction
+- [x] Replace the social preview with Vox Automata artwork
+- [x] Update rendered-page coverage
+- [x] Verify build, tests, types, and lint

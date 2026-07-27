@@ -3,28 +3,28 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://game-of-talk.jessh.chatgpt.site"),
-  title: "Game of Talk",
+  title: "Vox Automata",
   description:
-    "A private, microphone-driven cellular visualizer for talks. Your voice becomes climate, never content.",
+    "A private, speech-responsive cellular visualizer for talks. Everything stays on your device.",
   openGraph: {
-    title: "Game of Talk",
+    title: "Vox Automata",
     description:
-      "Your voice becomes climate inside a living cellular field, never content.",
+      "Your words shape a local cellular environment. Nothing is transcribed, recorded, or sent anywhere.",
     type: "website",
     images: [
       {
         url: "/og.png",
         width: 1536,
         height: 1024,
-        alt: "Game of Talk cellular field",
+        alt: "Vox Automata cellular field",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Game of Talk",
+    title: "Vox Automata",
     description:
-      "Your voice becomes climate inside a living cellular field, never content.",
+      "Your words shape a local cellular environment. Nothing is transcribed, recorded, or sent anywhere.",
     images: ["/og.png"],
   },
   icons: {
