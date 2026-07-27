@@ -39,4 +39,4 @@
 - [x] Keep fossils, mosaic export, live controls, and palette cycling consistent
 - [x] Update visual-system documentation and rendered-page coverage
 - [x] Verify build, tests, types, and lint
-- [ ] Commit, push, and publish the update
+- [x] Commit, push, and publish the update
