@@ -89,6 +89,50 @@ input:focus-visible {
   --line: oklch(0.36 0.045 235 / 60%);
 }
 
+.visualizer.palette-sodium {
+  --ground: oklch(0.108 0.01 85);
+  --panel: oklch(0.15 0.016 85);
+  --life: oklch(0.84 0.14 92);
+  --life-hot: oklch(0.95 0.07 105);
+  --signal: oklch(0.77 0.16 48);
+  --text: oklch(0.91 0.02 85);
+  --muted: oklch(0.67 0.025 85);
+  --line: oklch(0.36 0.035 85 / 60%);
+}
+
+.visualizer.palette-bone {
+  --ground: oklch(0.105 0.006 75);
+  --panel: oklch(0.15 0.01 75);
+  --life: oklch(0.88 0.025 85);
+  --life-hot: oklch(0.97 0.012 95);
+  --signal: oklch(0.78 0.14 55);
+  --text: oklch(0.91 0.018 75);
+  --muted: oklch(0.67 0.022 75);
+  --line: oklch(0.36 0.025 75 / 60%);
+}
+
+.visualizer.palette-ultraviolet {
+  --ground: oklch(0.108 0.012 300);
+  --panel: oklch(0.15 0.018 300);
+  --life: oklch(0.8 0.14 300);
+  --life-hot: oklch(0.93 0.075 325);
+  --signal: oklch(0.81 0.13 85);
+  --text: oklch(0.91 0.02 300);
+  --muted: oklch(0.67 0.025 300);
+  --line: oklch(0.36 0.035 300 / 60%);
+}
+
+.visualizer.palette-rosewood {
+  --ground: oklch(0.108 0.012 355);
+  --panel: oklch(0.15 0.018 355);
+  --life: oklch(0.8 0.14 355);
+  --life-hot: oklch(0.92 0.09 25);
+  --signal: oklch(0.82 0.13 105);
+  --text: oklch(0.91 0.02 355);
+  --muted: oklch(0.67 0.025 355);
+  --line: oklch(0.36 0.035 355 / 60%);
+}
+
 .life-field {
   position: absolute;
   inset: 0;
@@ -121,6 +165,7 @@ input:focus-visible {
   justify-content: center;
   width: min(470px, calc(100% - 32px));
   min-height: 100%;
+  overflow-y: auto;
   padding: clamp(28px, 6vh, 72px) clamp(24px, 5vw, 64px);
   background: linear-gradient(
     90deg,
@@ -239,19 +284,7 @@ legend {
 .palette-dot {
   width: 7px;
   height: 7px;
-  background: currentColor;
-}
-
-.dot-terminal {
-  color: oklch(0.82 0.17 145);
-}
-
-.dot-ember {
-  color: oklch(0.78 0.18 38);
-}
-
-.dot-ice {
-  color: oklch(0.79 0.14 215);
+  background: var(--life);
 }
 
 .toggle-row {

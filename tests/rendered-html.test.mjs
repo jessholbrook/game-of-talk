@@ -44,5 +44,11 @@ test("ships a private, browser-local microphone experience", async () => {
   assert.match(html, /Projector boost/);
   assert.match(html, /Terminal/);
   assert.match(html, /Meditative/);
+  for (const feel of ["Glacial", "Tidal", "Staccato", "Overgrown"]) {
+    assert.match(html, new RegExp(feel));
+  }
+  for (const palette of ["Sodium", "Bone", "Ultraviolet", "Rosewood"]) {
+    assert.match(html, new RegExp(palette));
+  }
   assert.doesNotMatch(html, /api[_-]?key|speech[- ]to[- ]text|transcript/i);
 });

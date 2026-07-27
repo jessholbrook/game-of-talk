@@ -37,6 +37,49 @@ Restrained by default. Tinted near-black surfaces carry a warm-green field with 
 - Life hot: `oklch(0.91 0.11 185)`
 - Signal: `oklch(0.76 0.15 285)`
 
+### Sodium
+
+- Ground: `oklch(0.108 0.010 85)`
+- Life: `oklch(0.84 0.14 92)`
+- Life hot: `oklch(0.95 0.07 105)`
+- Signal: `oklch(0.77 0.16 48)`
+
+### Bone
+
+- Ground: `oklch(0.105 0.006 75)`
+- Life: `oklch(0.88 0.025 85)`
+- Life hot: `oklch(0.97 0.012 95)`
+- Signal: `oklch(0.78 0.14 55)`
+
+### Ultraviolet
+
+- Ground: `oklch(0.108 0.012 300)`
+- Life: `oklch(0.80 0.14 300)`
+- Life hot: `oklch(0.93 0.075 325)`
+- Signal: `oklch(0.81 0.13 85)`
+
+### Rosewood
+
+- Ground: `oklch(0.108 0.012 355)`
+- Life: `oklch(0.80 0.14 355)`
+- Life hot: `oklch(0.92 0.09 25)`
+- Signal: `oklch(0.82 0.13 105)`
+
+## Talk Feels
+
+The feel control changes the simulation's mutation rhythm, spatial drift,
+density ceiling, survival variation, and decay. It is not a simple speed
+control.
+
+- Glacial: slow, durable structures that the voice nudges rather than erupts
+- Meditative: sparse and patient, with long visual memory
+- Balanced: the neutral instrument setting
+- Tidal: broad wandering bands that swell with sustained speech
+- Staccato: sharp phrase-triggered blooms with fast clearing
+- Restless: frequent movement and shorter-lived colonies
+- Electric: fast, bright, high-sensitivity mutation
+- Overgrown: dense, persistent colonies that remain inhabited in quiet
+
 ## Typography
 
 Use the system monospace stack for all controls and labels. Use tabular numerals for timers and counters. Hierarchy comes from size, weight, tracking, and case rather than a second typeface.

@@ -18,8 +18,23 @@ import {
 } from "@/lib/life.mjs";
 
 type Phase = "setup" | "live" | "finished";
-type Mood = "meditative" | "balanced" | "restless" | "electric";
-type Palette = "terminal" | "ember" | "ice";
+type Mood =
+  | "glacial"
+  | "meditative"
+  | "balanced"
+  | "tidal"
+  | "staccato"
+  | "restless"
+  | "electric"
+  | "overgrown";
+type Palette =
+  | "terminal"
+  | "ember"
+  | "ice"
+  | "sodium"
+  | "bone"
+  | "ultraviolet"
+  | "rosewood";
 type MicStatus =
   | "idle"
   | "requesting"
@@ -47,36 +62,228 @@ const GRID_HEIGHT = 60;
 const FOSSIL_SIZE = 18;
 const MINUTE_MS = 60_000;
 
-const MOODS: Record<
-  Mood,
-  { label: string; stepMs: number; sensitivity: number; decay: number }
-> = {
-  meditative: { label: "Meditative", stepMs: 150, sensitivity: 0.72, decay: 0.003 },
-  balanced: { label: "Balanced", stepMs: 108, sensitivity: 0.9, decay: 0.005 },
-  restless: { label: "Restless", stepMs: 82, sensitivity: 1.08, decay: 0.007 },
-  electric: { label: "Electric", stepMs: 64, sensitivity: 1.25, decay: 0.009 },
+type MoodConfig = {
+  label: string;
+  stepMs: number;
+  mutationMs: number;
+  sensitivity: number;
+  decay: number;
+  driftBase: number;
+  driftBrightness: number;
+  radiusMin: number;
+  radiusMax: number;
+  densityCap: number;
+  survivalFourScale: number;
+  backgroundBirth: number;
+  trailGain: number;
+  trailFade: number;
+  silenceFade: number;
+  injectionGate: "voice" | "accent";
 };
 
-const PALETTES: Record<Palette, { label: string; hot: string; life: string; dim: string }> = {
+const MOODS: Record<Mood, MoodConfig> = {
+  glacial: {
+    label: "Glacial",
+    stepMs: 205,
+    mutationMs: 285,
+    sensitivity: 0.82,
+    decay: 0.0015,
+    driftBase: 0.016,
+    driftBrightness: 0.025,
+    radiusMin: 0.1,
+    radiusMax: 0.18,
+    densityCap: 0.24,
+    survivalFourScale: 0.24,
+    backgroundBirth: 0.0005,
+    trailGain: 12,
+    trailFade: 2,
+    silenceFade: 6,
+    injectionGate: "voice",
+  },
+  meditative: {
+    label: "Meditative",
+    stepMs: 150,
+    mutationMs: 190,
+    sensitivity: 0.72,
+    decay: 0.003,
+    driftBase: 0.034,
+    driftBrightness: 0.05,
+    radiusMin: 0.14,
+    radiusMax: 0.3,
+    densityCap: 0.25,
+    survivalFourScale: 0.15,
+    backgroundBirth: 0.0007,
+    trailGain: 16,
+    trailFade: 3,
+    silenceFade: 8,
+    injectionGate: "voice",
+  },
+  balanced: {
+    label: "Balanced",
+    stepMs: 108,
+    mutationMs: 145,
+    sensitivity: 0.9,
+    decay: 0.005,
+    driftBase: 0.045,
+    driftBrightness: 0.085,
+    radiusMin: 0.16,
+    radiusMax: 0.4,
+    densityCap: 0.28,
+    survivalFourScale: 0.16,
+    backgroundBirth: 0.0008,
+    trailGain: 18,
+    trailFade: 4,
+    silenceFade: 9,
+    injectionGate: "voice",
+  },
+  tidal: {
+    label: "Tidal",
+    stepMs: 128,
+    mutationMs: 175,
+    sensitivity: 0.96,
+    decay: 0.004,
+    driftBase: 0.03,
+    driftBrightness: 0.045,
+    radiusMin: 0.3,
+    radiusMax: 0.46,
+    densityCap: 0.26,
+    survivalFourScale: 0.18,
+    backgroundBirth: 0.0008,
+    trailGain: 16,
+    trailFade: 4,
+    silenceFade: 8,
+    injectionGate: "voice",
+  },
+  staccato: {
+    label: "Staccato",
+    stepMs: 88,
+    mutationMs: 235,
+    sensitivity: 1.18,
+    decay: 0.014,
+    driftBase: 0.11,
+    driftBrightness: 0.15,
+    radiusMin: 0.16,
+    radiusMax: 0.34,
+    densityCap: 0.18,
+    survivalFourScale: 0.06,
+    backgroundBirth: 0.0003,
+    trailGain: 22,
+    trailFade: 7,
+    silenceFade: 14,
+    injectionGate: "accent",
+  },
+  restless: {
+    label: "Restless",
+    stepMs: 82,
+    mutationMs: 112,
+    sensitivity: 1.08,
+    decay: 0.007,
+    driftBase: 0.075,
+    driftBrightness: 0.12,
+    radiusMin: 0.17,
+    radiusMax: 0.42,
+    densityCap: 0.27,
+    survivalFourScale: 0.13,
+    backgroundBirth: 0.0008,
+    trailGain: 20,
+    trailFade: 5,
+    silenceFade: 10,
+    injectionGate: "voice",
+  },
+  electric: {
+    label: "Electric",
+    stepMs: 64,
+    mutationMs: 95,
+    sensitivity: 1.25,
+    decay: 0.009,
+    driftBase: 0.1,
+    driftBrightness: 0.16,
+    radiusMin: 0.2,
+    radiusMax: 0.46,
+    densityCap: 0.29,
+    survivalFourScale: 0.12,
+    backgroundBirth: 0.0009,
+    trailGain: 24,
+    trailFade: 6,
+    silenceFade: 12,
+    injectionGate: "voice",
+  },
+  overgrown: {
+    label: "Overgrown",
+    stepMs: 138,
+    mutationMs: 105,
+    sensitivity: 0.78,
+    decay: 0.0022,
+    driftBase: 0.022,
+    driftBrightness: 0.035,
+    radiusMin: 0.12,
+    radiusMax: 0.29,
+    densityCap: 0.34,
+    survivalFourScale: 0.32,
+    backgroundBirth: 0.0014,
+    trailGain: 15,
+    trailFade: 3,
+    silenceFade: 6,
+    injectionGate: "voice",
+  },
+};
+
+const PALETTES: Record<
+  Palette,
+  { label: string; ground: string; hot: string; life: string; dim: string }
+> = {
   terminal: {
     label: "Terminal",
+    ground: "oklch(0.105 0.008 145)",
     hot: "oklch(0.93 0.12 124)",
     life: "oklch(0.82 0.17 145)",
     dim: "oklch(0.34 0.055 145)",
   },
   ember: {
     label: "Ember",
+    ground: "oklch(0.115 0.014 35)",
     hot: "oklch(0.91 0.15 72)",
     life: "oklch(0.78 0.18 38)",
     dim: "oklch(0.35 0.065 35)",
   },
   ice: {
     label: "Ice",
+    ground: "oklch(0.115 0.012 245)",
     hot: "oklch(0.91 0.11 185)",
     life: "oklch(0.79 0.14 215)",
     dim: "oklch(0.36 0.06 235)",
   },
+  sodium: {
+    label: "Sodium",
+    ground: "oklch(0.108 0.01 85)",
+    hot: "oklch(0.95 0.07 105)",
+    life: "oklch(0.84 0.14 92)",
+    dim: "oklch(0.36 0.05 85)",
+  },
+  bone: {
+    label: "Bone",
+    ground: "oklch(0.105 0.006 75)",
+    hot: "oklch(0.97 0.012 95)",
+    life: "oklch(0.88 0.025 85)",
+    dim: "oklch(0.36 0.025 75)",
+  },
+  ultraviolet: {
+    label: "Ultraviolet",
+    ground: "oklch(0.108 0.012 300)",
+    hot: "oklch(0.93 0.075 325)",
+    life: "oklch(0.8 0.14 300)",
+    dim: "oklch(0.36 0.05 300)",
+  },
+  rosewood: {
+    label: "Rosewood",
+    ground: "oklch(0.108 0.012 355)",
+    hot: "oklch(0.92 0.09 25)",
+    life: "oklch(0.8 0.14 355)",
+    dim: "oklch(0.36 0.05 355)",
+  },
 };
+
+const PALETTE_ORDER = Object.keys(PALETTES) as Palette[];
 
 const EMPTY_FEATURES: AudioFeatures = {
   level: 0,
@@ -331,9 +538,10 @@ export function TalkVisualizer() {
   }, []);
 
   const cyclePalette = useCallback(() => {
-    setPalette((current) =>
-      current === "terminal" ? "ember" : current === "ember" ? "ice" : "terminal",
-    );
+    setPalette((current) => {
+      const currentIndex = PALETTE_ORDER.indexOf(current);
+      return PALETTE_ORDER[(currentIndex + 1) % PALETTE_ORDER.length];
+    });
   }, []);
 
   const downloadMosaic = useCallback(() => {
@@ -348,11 +556,9 @@ export function TalkVisualizer() {
     const context = canvas.getContext("2d");
     if (!context) return;
 
-    context.fillStyle =
-      palette === "terminal" ? "#0d120e" : palette === "ember" ? "#17100f" : "#0e1318";
+    context.fillStyle = PALETTES[palette].ground;
     context.fillRect(0, 0, canvas.width, canvas.height);
-    context.fillStyle =
-      palette === "terminal" ? "#b8ff9f" : palette === "ember" ? "#ff9a68" : "#88e9ff";
+    context.fillStyle = PALETTES[palette].life;
     context.font = "18px monospace";
     context.fillText(
       `GAME OF TALK  /  ${formatTime(elapsedRef.current)}  /  ${fossils.length} BLOCKS`,
@@ -488,11 +694,24 @@ export function TalkVisualizer() {
       if (voiceActive) lastVoiceRef.current = now;
       const silenceDuration = now - lastVoiceRef.current;
 
-      if (active && now - lastMutationRef.current > 145 && voiceActive) {
+      const accentPassed =
+        moodConfig.injectionGate === "voice" ||
+        features.flux > 0.22 ||
+        features.level > 0.55;
+      if (
+        active &&
+        now - lastMutationRef.current > moodConfig.mutationMs &&
+        voiceActive &&
+        accentPassed
+      ) {
         lastMutationRef.current = now;
         const flow = flowRef.current;
-        flow.angle += 0.045 + features.brightness * 0.085;
-        flow.radius = 0.16 + features.texture * 0.24;
+        flow.angle +=
+          moodConfig.driftBase +
+          features.brightness * moodConfig.driftBrightness;
+        flow.radius =
+          moodConfig.radiusMin +
+          features.texture * (moodConfig.radiusMax - moodConfig.radiusMin);
         const x = 0.5 + Math.cos(flow.angle * 0.71) * flow.radius;
         const y = 0.5 + Math.sin(flow.angle) * flow.radius;
         gridRef.current = injectSpores(gridRef.current, GRID_WIDTH, GRID_HEIGHT, {
@@ -513,17 +732,28 @@ export function TalkVisualizer() {
             ? Math.min(0.045, moodConfig.decay + silenceDuration / 300_000)
             : 0;
         gridRef.current = stepGrid(gridRef.current, GRID_WIDTH, GRID_HEIGHT, {
-          survivalFourChance: active ? features.level * 0.16 : 0.015,
-          mortality: silenceDecay + (density > 0.28 ? 0.025 : 0),
+          survivalFourChance: active
+            ? features.level * moodConfig.survivalFourScale
+            : 0.015,
+          mortality:
+            silenceDecay + (density > moodConfig.densityCap ? 0.025 : 0),
           backgroundBirthChance:
-            active && density < 0.075 && silenceDuration < 8_000 ? 0.0008 : 0,
+            active && density < 0.075 && silenceDuration < 8_000
+              ? moodConfig.backgroundBirth
+              : 0,
           rng: rngRef.current,
         });
 
         for (let index = 0; index < gridRef.current.length; index += 1) {
           agesRef.current[index] = gridRef.current[index]
-            ? Math.min(255, agesRef.current[index] + 18)
-            : Math.max(0, agesRef.current[index] - (silenceDuration > 1800 ? 9 : 4));
+            ? Math.min(255, agesRef.current[index] + moodConfig.trailGain)
+            : Math.max(
+                0,
+                agesRef.current[index] -
+                  (silenceDuration > 1800
+                    ? moodConfig.silenceFade
+                    : moodConfig.trailFade),
+              );
         }
       }
 
@@ -681,7 +911,11 @@ export function TalkVisualizer() {
                   aria-pressed={palette === option}
                   onClick={() => setPalette(option)}
                 >
-                  <span className={`palette-dot dot-${option}`} aria-hidden="true" />
+                  <span
+                    className="palette-dot"
+                    style={{ backgroundColor: PALETTES[option].life }}
+                    aria-hidden="true"
+                  />
                   {PALETTES[option].label}
                 </button>
               ))}

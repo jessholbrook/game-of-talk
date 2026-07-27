@@ -19,4 +19,14 @@
 - TypeScript and lint checks pass.
 - The live tool supports microphone and autonomous modes, pause-aware timing,
   automatic and manual fossil capture, fullscreen, narrow companion layouts,
-  three palettes, four talk characters, keyboard controls, and PNG export.
+  seven palettes, eight talk characters, keyboard controls, and PNG export.
+
+## Feel and palette expansion
+
+- [x] Add four distinct talk feels beyond the original set
+- [x] Add four projector-safe palettes beyond Terminal, Ember, and Ice
+- [x] Make feel selection alter mutation rhythm, drift, density, and decay
+- [x] Keep palette cycling, fossil rendering, and PNG export consistent
+- [x] Update visual-system documentation and rendered-page coverage
+- [x] Verify build, tests, types, and lint
+- [x] Commit, push, and publish the update
