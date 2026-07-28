@@ -58,3 +58,10 @@
 - [x] Make setup mode preview the selected feel before microphone access
 - [x] Update documentation and regression coverage
 - [x] Verify build, tests, types, and lint
+
+## Detailed README
+
+- [x] Capture current setup, palette, live, and mosaic screenshots
+- [x] Document presenter workflow, feel behavior, palettes, and controls
+- [x] Document privacy, browser guidance, architecture, and testing
+- [x] Verify links, screenshots, build, tests, types, and lint
